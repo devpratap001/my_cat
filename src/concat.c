@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/concat.h"
+#include "../include/parse_token.h"
 
 void stdin_concat(void)
 {
