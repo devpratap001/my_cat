@@ -5,6 +5,8 @@ this header controls function and datatye definitions for concate command functi
 #ifndef CONCAT_H
 #define CONCAT_H
 
+#include "parse_token.h"
+
 //define length of I/O buffer
 #define BUFF_LENGTH 10
 
@@ -17,5 +19,7 @@ void stdin_concat(void);
 // Ctrl + C(interrupt) or Ctrl + D (EOF) signal handler
 void interrupt_handler(int);
 
+//Parse filenames and print the content on the screen
+void parse_files(TOKEN_T, const char*);
 
 #endif

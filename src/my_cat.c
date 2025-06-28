@@ -39,6 +39,10 @@ int main(int argc, char ** argv)
             fprintf(stderr, "missing FILENAME argument\n");
             exit(EXIT_SUCCESS);
         }
+        for (; i < argc; i++)
+        {
+            parse_files(flag_tokens, argv[i]);
+        }
     }
     return 0;
 };
