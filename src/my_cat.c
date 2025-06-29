@@ -7,6 +7,12 @@
 
 //buffer storage to temporatily store buffers
 char buff[BUFF_LENGTH];
+
+//output buffer to store flag modefied buffer data
+char out_buff[BUFF_LENGTH];
+size_t out_buff_index = 0;
+
+//flag storage variable
 TOKEN_T flag_tokens = 0;
 
 int main(int argc, char ** argv)
@@ -43,6 +49,7 @@ int main(int argc, char ** argv)
         {
             parse_files(flag_tokens, argv[i]);
         }
+        flush_out_buff(&out_buff_index, 0, FORCE_T);
     }
     return 0;
 };
