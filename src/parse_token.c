@@ -15,10 +15,18 @@ TOKEN_T* parse_token(TOKEN_T* tok, char* path)
     switch (*(path + 1))
     {
     case 'n':
-        *tok |= NUMBER;
+        if ( !(*tok & NUMBER_NON_BLANK) )
+            *tok |= NUMBER;
         break;
     case 'e':
         *tok |= ENDS;
+        break;
+    case 'b':
+        *tok |= NUMBER_NON_BLANK;
+        *tok &= ~NUMBER;
+        break;
+    case 's':
+        *tok |= SQUEEZE_BLANK;
         break;
     
     default:

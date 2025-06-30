@@ -30,6 +30,8 @@ int main(int argc, char ** argv)
         printf("\t--help\t:Print the manual page.\n");
         printf("\t-n\t:Print each line with line number\n");
         printf("\t-e\t:Show line end with a '$' sign\n");
+        printf("\t-b\t:Print line number for non-blank lines\n");
+        printf("\t-s\t:Suppress repeated empty output lines\n");
         printf("\n");
     }
     else
