@@ -4,6 +4,11 @@
 #include <signal.h>
 #include "../include/concat.h"
 #include "../include/parse_token.h"
+#include "../include/io_redirect.h"
+
+//define characters for IO redirection CLI input
+char in[] = "[";
+char out[] = "]";
 
 //buffer storage to temporatily store buffers
 char buff[BUFF_LENGTH];
@@ -14,6 +19,10 @@ size_t out_buff_index = 0;
 
 //flag storage variable
 TOKEN_T flag_tokens = 0;
+
+//original stdin and stdout descriptors
+int original_stdin = 0;
+int original_stdout = 1;
 
 int main(int argc, char ** argv)
 {
@@ -44,8 +53,14 @@ int main(int argc, char ** argv)
                 parse_token(&flag_tokens, argv[i]);
                 flag_count ++;
             }
-            else if ( argv[i][0] == '<' || argv[i][0] == '>' )
+            else if (!strcmp(argv[i], in) || !strcmp(argv[i], out))
             {
+                if (i + 1 >= argc)
+                {
+                    fprintf(stderr, "bash: syntax error near unexpected token `newline'\n");
+                    exit(EXIT_FAILURE);
+                }
+                io_redirect(argv[i], argv[i+1]);
                 flag_count++;
             }
         }
@@ -58,12 +73,17 @@ int main(int argc, char ** argv)
 
         for (size_t i = 1; i < argc; i++)
         {
-            if (argv[i][0] != '-' && argv[i][0] != '<' && argv[i][0] != '>')
+            if (argv[i][0] != '-' && strcmp(argv[i], in) && strcmp(argv[i], out))
             {
                 parse_files(flag_tokens, argv[i]);
+            }
+            else if (!strcmp(argv[i], out) || !strcmp(argv[i], in))
+            {
+                i++;
             }
         }
         flush_out_buff(&out_buff_index, 0, FORCE_T);
     }
+    restore_descriptors();
     return 0;
 };
