@@ -7,29 +7,23 @@
 #include "../include/concat.h"
 #include "../include/parse_token.h"
 
-void stdin_concat(void)
+void stdin_concat(TOKEN_T tok)
 {
     while (1)
     {
-        char *ptr;
-        ptr = fgets(buff, BUFF_LENGTH, stdin);
-        if (ptr == NULL)
+        ssize_t bytes;
+        bytes = read(STDIN_FILENO, buff, BUFF_LENGTH);
+        if (bytes == -1)
         {
-            if (feof(stdin))
-            {
-                exit(EXIT_SUCCESS);
-            }
-            if (ferror(stdin))
-            {
-                perror("can't read from stdin");
-                exit(EXIT_FAILURE);
-            }
-        }
-        if (!(fputs(buff, stdout) > 0))
-        {
-            perror("can't write to stdout");
+            perror("can't read from stdin");
             exit(EXIT_FAILURE);
         }
+        else if (bytes == 0)
+        {
+            exit(EXIT_SUCCESS);
+        }
+        print_buffer(tok, buff, bytes);
+        flush_out_buff(&out_buff_index, 0, 1);
     }
 };
 
@@ -51,7 +45,7 @@ void parse_files(TOKEN_T tok, const char *fname)
         }
         else
         {
-            print_file(tok, buff, bytes);
+            print_buffer(tok, buff, bytes);
         }
     }
     if (bytes == -1)
@@ -66,7 +60,7 @@ void parse_files(TOKEN_T tok, const char *fname)
     }
 };
 
-void print_file(TOKEN_T tok, char buff[BUFF_LENGTH], size_t bytes)
+void print_buffer(TOKEN_T tok, char buff[BUFF_LENGTH], size_t bytes)
 {
     static int line_no = 1;
     static char last_char = '\n';

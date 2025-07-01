@@ -28,7 +28,7 @@ void flush_out_buff(size_t *out_index, size_t len, FORCE_FLUSH);
 #define LINE_NO_SIZE 16     //24, for 64 bit implementation 
 
 //handle concatenation when default input is stdin
-void stdin_concat(void);
+void stdin_concat(TOKEN_T tok);
 
 // Ctrl + C(interrupt) or Ctrl + D (EOF) signal handler
 void interrupt_handler(int);
@@ -36,7 +36,7 @@ void interrupt_handler(int);
 //Parse filenames and print the content on the screen
 void parse_files(TOKEN_T, const char*);
 
-//write file content to stdout and modify according to flags
-void print_file(TOKEN_T, char[BUFF_LENGTH], size_t);
+//write buffer content to stdout and modify according to flags
+void print_buffer(TOKEN_T, char[BUFF_LENGTH], size_t);
 
 #endif
