@@ -20,7 +20,7 @@ int main(int argc, char ** argv)
     signal(SIGINT, interrupt_handler);
     if (argc == 1)
     {
-        stdin_concat();
+        stdin_concat(flag_tokens);
     }
     else if (argc == 2 && !strncmp(argv[1], "--help", strlen("--help")))
     {
@@ -36,20 +36,32 @@ int main(int argc, char ** argv)
     }
     else
     {
-        int i = 1;
-        while (i < argc && !strncmp(argv[i], "-", 1))
+        int flag_count = 0;
+        for (int i = 1; i < argc; i++)
         {
-            parse_token(&flag_tokens, argv[i]);
-            i++;
+            if ( argv[i][0] == '-' )
+            {
+                parse_token(&flag_tokens, argv[i]);
+                flag_count ++;
+            }
+            else if ( argv[i][0] == '<' || argv[i][0] == '>' )
+            {
+                flag_count++;
+            }
         }
-        if (i == argc)
+        if (flag_count == argc -1)
         {
-            fprintf(stderr, "missing FILENAME argument\n");
-            exit(EXIT_SUCCESS);
+            stdin_concat(flag_tokens);
+            flush_out_buff(&out_buff_index, 0, FORCE_T);
+            return 0;
         }
-        for (; i < argc; i++)
+
+        for (size_t i = 1; i < argc; i++)
         {
-            parse_files(flag_tokens, argv[i]);
+            if (argv[i][0] != '-' && argv[i][0] != '<' && argv[i][0] != '>')
+            {
+                parse_files(flag_tokens, argv[i]);
+            }
         }
         flush_out_buff(&out_buff_index, 0, FORCE_T);
     }
